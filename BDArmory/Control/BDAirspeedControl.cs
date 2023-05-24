@@ -64,15 +64,20 @@ namespace BDArmory.Control
         public void Activate()
         {
             controlEnabled = true;
+            /*
             vessel.OnFlyByWire -= AirspeedControl;
             vessel.OnFlyByWire += AirspeedControl;
+            */
+            vessel.OnPreAutopilotUpdate -= AirspeedControl;
+            vessel.OnPreAutopilotUpdate += AirspeedControl;
             multiModeEngines = new List<MultiModeEngine>();
         }
 
         public void Deactivate()
         {
             controlEnabled = false;
-            vessel.OnFlyByWire -= AirspeedControl;
+            //vessel.OnFlyByWire -= AirspeedControl;
+            vessel.OnPreAutopilotUpdate -= AirspeedControl;
         }
 
         void AirspeedControl(FlightCtrlState s)
