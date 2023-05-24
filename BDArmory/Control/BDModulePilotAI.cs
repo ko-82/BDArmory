@@ -1617,9 +1617,43 @@ namespace BDArmory.Control
             base.OnDestroy();
         }
 
+        //A carbon copy of BDGenericAIBase::ActivatePilot but uses OnPreAutopilotUpdate instead
+        public void ActivatePilotPAU()
+        {
+            ScreenMessages.PostScreenMessage("New Pilot Activated", 3.0f, ScreenMessageStyle.UPPER_RIGHT);
+            pilotOn = true;
+            if (activeVessel)
+                activeVessel.OnPreAutopilotUpdate -= autoPilot;
+            activeVessel = vessel;
+            activeVessel.OnPreAutopilotUpdate += autoPilot;
+
+            if (!speedController)
+            {
+                speedController = gameObject.AddComponent<BDAirspeedControl>();
+                speedController.vessel = vessel;
+            }
+
+            speedController.Activate();
+
+            GameEvents.onVesselDestroy.Remove(RemoveAutopilot);
+            GameEvents.onVesselDestroy.Add(RemoveAutopilot);
+
+            assignedPositionWorld = vessel.ReferenceTransform.position;
+            try // Sometimes the FSM breaks trying to set the gear action group
+            {
+                // I need to make sure gear is deployed on startup so it'll get properly retracted.
+                vessel.ActionGroups.SetGroup(KSPActionGroup.Gear, true);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[BDArmory.BDGenericAIBase]: Failed to set Gear action group: {e.Message}");
+            }
+            RefreshPartWindow();
+        }
+
         public override void ActivatePilot()
         {
-            base.ActivatePilot();
+            ActivatePilotPAU();
 
             belowMinAltitude = vessel.LandedOrSplashed;
             prevTargetDir = vesselTransform.up;
@@ -1627,6 +1661,21 @@ namespace BDArmory.Control
                 initialTakeOff = false;
 
             bodyGravity = (float)PhysicsGlobals.GravitationalAcceleration * (float)vessel.orbit.referenceBody.GeeASL; // Set gravity for calculations;
+        }
+
+        public override void DeactivatePilot()
+        {
+            pilotOn = false;
+            if (activeVessel)
+            {
+                activeVessel.OnPreAutopilotUpdate -= autoPilot;
+            }
+            RefreshPartWindow();
+
+            if (speedController)
+            {
+                speedController.Deactivate();
+            }
         }
 
         void Update()
@@ -1725,7 +1774,7 @@ namespace BDArmory.Control
             AdjustThrottle(maxSpeed, true);
             useAB = true;
             useBrakes = true;
-            vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, true);
+            //vessel.ActionGroups.SetGroup(KSPActionGroup.SAS, true);
             if (vessel.atmDensity < 0.05)
             {
                 vessel.ActionGroups.SetGroup(KSPActionGroup.RCS, true);
