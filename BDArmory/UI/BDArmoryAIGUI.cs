@@ -348,7 +348,7 @@ namespace BDArmory.UI
                         { "takeOffSpeed", gameObject.AddComponent<NumericInputField>().Initialise(0, ActivePilot.takeOffSpeed, 10, 200) },
                         { "minSpeed", gameObject.AddComponent<NumericInputField>().Initialise(0, ActivePilot.minSpeed, 10, 200) },
                         { "strafingSpeed", gameObject.AddComponent<NumericInputField>().Initialise(0, ActivePilot.strafingSpeed, 10, 200) },
-                        { "idleSpeed", gameObject.AddComponent<NumericInputField>().Initialise(0, ActivePilot.idleSpeed, 10, 200) },
+                        { "idleSpeed", gameObject.AddComponent<NumericInputField>().Initialise(0, ActivePilot.idleSpeed, 10, 300) },
                         { "ABPriority", gameObject.AddComponent<NumericInputField>().Initialise(0, ActivePilot.ABPriority, 0, 100) },
                         { "ABOverrideThreshold", gameObject.AddComponent<NumericInputField>().Initialise(0, ActivePilot.ABOverrideThreshold, 0, 200) },
 
@@ -441,7 +441,7 @@ namespace BDArmory.UI
                     else inputFields["maxSpeed"].maxValue = ActivePilot.UpToEleven ? 3000 : 800;
                     inputFields["takeOffSpeed"].maxValue = ActivePilot.UpToEleven ? 2000 : 200;
                     inputFields["minSpeed"].maxValue = ActivePilot.UpToEleven ? 2000 : 200;
-                    inputFields["idleSpeed"].maxValue = ActivePilot.UpToEleven ? 3000 : 200;
+                    inputFields["idleSpeed"].maxValue = ActivePilot.UpToEleven ? 3000 : 300;
 
                     inputFields["maxAllowedGForce"].maxValue = ActivePilot.UpToEleven ? 1000 : 45;
                     inputFields["maxAllowedAoA"].maxValue = ActivePilot.UpToEleven ? 180 : 90;
