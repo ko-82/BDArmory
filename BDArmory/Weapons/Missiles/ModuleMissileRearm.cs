@@ -114,8 +114,22 @@ UI_FloatRange(minValue = 1f, maxValue = 4, stepIncrement = 1f, scene = UI_Scene.
                 while (parts.MoveNext())
                 {
                     if (parts.Current.partConfig == null || parts.Current.partPrefab == null)
+                    {
+                        if (BDArmorySettings.DEBUG_MISSILES)
+                        {
+                            if (parts.Current.partConfig == null)
+                                Debug.Log($"[BDArmory.ModuleMissileRearm]: GetMissileValues(): parts.Current.partConfig is null");
+                            if (parts.Current.partPrefab == null)
+                                Debug.Log($"[BDArmory.ModuleMissileRearm]: GetMissileValues(): parts.Current.partPrefab is null");
+                        }
                         continue;
-                    if (parts.Current.partPrefab.partInfo.name != MissileName) continue;
+                    }
+                    if (parts.Current.partPrefab.partInfo.name != MissileName)
+                    {
+                        if (BDArmorySettings.DEBUG_MISSILES)
+                            Debug.Log($"[BDArmory.ModuleMissileRearm]: GetMissileValues(): {parts.Current.partPrefab.partInfo.name} != {MissileName}");
+                        continue;
+                    }
                     missilePart = parts.Current;
                     if (BDArmorySettings.DEBUG_MISSILES) Debug.Log($"[BDArmory.ModuleMissileRearm]: found {missilePart.partPrefab.partInfo.name}");
                     break;
@@ -141,7 +155,7 @@ UI_FloatRange(minValue = 1f, maxValue = 4, stepIncrement = 1f, scene = UI_Scene.
 
         static IEnumerator FinalizeMissile(Part missile, Part launcher)
         {
-            //Debug.Log("[BDArmory.ModuleMissileRearm]: Creating " + missile);
+            Debug.Log("[BDArmory.ModuleMissileRearm]: Creating " + missile);
             string originatingVesselName = missile.vessel.vesselName;
             missile.physicalSignificance = Part.PhysicalSignificance.NONE;
             missile.PromoteToPhysicalPart();
