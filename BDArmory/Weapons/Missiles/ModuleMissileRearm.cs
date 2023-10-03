@@ -48,6 +48,10 @@ UI_FloatRange(minValue = 1f, maxValue = 4, stepIncrement = 1f, scene = UI_Scene.
 
                     foreach (PartModule m in missilePart.partPrefab.Modules)
                     {
+                        if (BDArmorySettings.DEBUG_MISSILES)
+                        {
+                            Debug.Log("[BDArmory.ModuleMissileRearm]:" + m.name + ": Current module:" + m.moduleName);
+                        }
                         if (m.moduleName == "MissileLauncher")
                         {
                             var partNode = new ConfigNode();
